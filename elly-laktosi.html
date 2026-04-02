@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="is">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Elly – Laktósi">
+<title>Elly – Laktósaóþol</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --red: #E24B4A;
+    --red-bg: #FFF0F0;
+    --amber: #C47A1A;
+    --amber-bg: #FFF8ED;
+    --green: #3B8C3A;
+    --green-bg: #F0FAF0;
+    --text: #1a1a1a;
+    --muted: #777;
+    --bg: #F7F5F2;
+    --card: #fff;
+    --border: rgba(0,0,0,0.08);
+  }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding-bottom: 2rem;
+  }
+
+  header {
+    background: #fff;
+    border-bottom: 1px solid var(--border);
+    padding: 1.2rem 1rem 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .header-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 0.75rem;
+  }
+
+  .emoji-icon {
+    font-size: 26px;
+    line-height: 1;
+  }
+
+  h1 {
+    font-size: 20px;
+    font-weight: 900;
+    color: var(--text);
+    line-height: 1.1;
+  }
+
+  h1 span {
+    font-weight: 400;
+    color: var(--muted);
+    font-size: 14px;
+    display: block;
+    margin-top: 1px;
+  }
+
+  .tabs {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .tabs::-webkit-scrollbar { display: none; }
+
+  .tab {
+    flex-shrink: 0;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+    border: 1.5px solid transparent;
+    cursor: pointer;
+    transition: all 0.15s;
+    background: var(--bg);
+    color: var(--muted);
+  }
+
+  .tab.active-red { background: var(--red-bg); color: var(--red); border-color: var(--red); }
+  .tab.active-amber { background: var(--amber-bg); color: var(--amber); border-color: var(--amber); }
+  .tab.active-green { background: var(--green-bg); color: var(--green); border-color: var(--green); }
+  .tab.active-purple { background: #F0EEFF; color: #5340C0; border-color: #8B7FE0; }
+
+  .page { display: none; padding: 1rem; }
+  .page.active { display: block; }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 1.25rem 0 0.6rem;
+  }
+
+  .section-label:first-child { margin-top: 0; }
+
+  .pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .pill {
+    font-size: 14px;
+    font-weight: 600;
+    padding: 7px 14px;
+    border-radius: 999px;
+    line-height: 1;
+  }
+
+  .pill.red { background: var(--red-bg); color: var(--red); }
+  .pill.amber { background: var(--amber-bg); color: var(--amber); }
+  .pill.green { background: var(--green-bg); color: var(--green); }
+
+  .tip-card {
+    background: var(--card);
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    padding: 1rem 1.1rem;
+    margin-top: 1rem;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text);
+  }
+
+  .tip-card strong {
+    font-weight: 700;
+  }
+
+  .swap-list { display: flex; flex-direction: column; gap: 0; }
+
+  .swap-row {
+    display: grid;
+    grid-template-columns: 1fr 20px 1fr;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+  }
+
+  .swap-row:last-child { border-bottom: none; }
+
+  .swap-from { color: var(--red); font-weight: 600; }
+  .swap-to { color: var(--green); font-weight: 600; }
+  .swap-arrow { text-align: center; color: var(--muted); font-size: 16px; }
+
+  .word-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .word-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .word-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .word-main {
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  .word-also {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 1px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <span class="emoji-icon">🥛</span>
+    <h1>Laktósaóþol<span>Ellys leiðarvísir</span></h1>
+  </div>
+  <div class="tabs">
+    <button class="tab active-red" onclick="showPage('forðast', this)">🚫 Forðast</button>
+    <button class="tab" onclick="showPage('maetur', this)">⚠️ Með varúð</button>
+    <button class="tab" onclick="showPage('valkostur', this)">✅ Í staðinn</button>
+    <button class="tab" onclick="showPage('nammi', this)">🍬 Nammi</button>
+    <button class="tab" onclick="showPage('lesa', this)">🔍 Lesa merki</button>
+  </div>
+</header>
+
+<!-- FORÐAST -->
+<div class="page active" id="page-forðast">
+  <div class="section-label">Mjólkurvörur</div>
+  <div class="pills">
+    <span class="pill red">Mjólk</span>
+    <span class="pill red">Rjómi</span>
+    <span class="pill red">Súrmjólk</span>
+    <span class="pill red">Kefír</span>
+    <span class="pill red">Skyr (stórir skammtar)</span>
+    <span class="pill red">Mjúkur ostur</span>
+    <span class="pill red">Ricotta</span>
+    <span class="pill red">Cottage cheese</span>
+  </div>
+  <div class="section-label">Sætur matur</div>
+  <div class="pills">
+    <span class="pill red">Ísbúðaís</span>
+    <span class="pill red">Mjólkúrchókólaði</span>
+    <span class="pill red">Hvítur súkkulaði</span>
+    <span class="pill red">Karamella / toffee</span>
+    <span class="pill red">Fudge</span>
+    <span class="pill red">Vanillusósa</span>
+    <span class="pill red">Rjómaostur</span>
+  </div>
+  <div class="section-label">Annað</div>
+  <div class="pills">
+    <span class="pill red">Sósur með rjóma</span>
+    <span class="pill red">Kremkaffi</span>
+    <span class="pill red">Flötur brauðkaffi</span>
+    <span class="pill red">Sumar kex</span>
+  </div>
+  <div class="tip-card">
+    💡 <strong>Muna:</strong> Hér er um laktósaóþol að ræða, ekki ofnæmi. Lítil magn ganga oft vel — þú þarft að finna þitt þol.
+  </div>
+</div>
+
+<!-- MEÐ VARÚÐ -->
+<div class="page" id="page-maetur">
+  <div class="section-label">Fer yfirleitt vel í litlum skömmtum</div>
+  <div class="pills">
+    <span class="pill amber">Harðir ostar (edam, gouda, parmesan)</span>
+    <span class="pill amber">Smjör (lítið í senn)</span>
+    <span class="pill amber">Skyr (lítill skammtur)</span>
+    <span class="pill amber">Mörkt súkkulaði (70%+)</span>
+    <span class="pill amber">Jógúrt (lítill skammtur)</span>
+    <span class="pill amber">Laktósalaust mjólk</span>
+    <span class="pill amber">Oreo (engin mjólk en sama verksmiðja)</span>
+  </div>
+  <div class="tip-card">
+    💊 <strong>Laktaseensím</strong> (t.d. Lactase töflur úr apóteki) — taktu með þér og svelgdu með mat sem inniheldur laktósa. Hjálpar mjög!
+  </div>
+</div>
+
+<!-- Í STAÐINN -->
+<div class="page" id="page-valkostur">
+  <div class="section-label">Skiptu út</div>
+  <div class="swap-list">
+    <div class="swap-row">
+      <span class="swap-from">Mjólk</span>
+      <span class="swap-arrow">→</span>
+      <span class="swap-to">Haframjólk · Möndlumjólk · Sojamjólk · Kókosmjólk</span>
+    </div>
+    <div class="swap-row">
+      <span class="swap-from">Ísbúðaís</span>
+      <span class="swap-arrow">→</span>
+      <span class="swap-to">Kókos-ís · Sorbetti · Möndlu-ís · Íslolly</span>
+    </div>
+    <div class="swap-row">
+      <span class="swap-from">Rjómi í mat</span>
+      <span class="swap-arrow">→</span>
+      <span class="swap-to">Kókosrjómi · Hafrarjómi</span>
+    </div>
+    <div class="swap-row">
+      <span class="swap-from">Jógúrt / skyr</span>
+      <span class="swap-arrow">→</span>
+      <span class="swap-to">Kókosjógúrt · Sojajógúrt</span>
+    </div>
+    <div class="swap-row">
+      <span class="swap-from">Ostur á pizza</span>
+      <span class="swap-arrow">→</span>
+      <span class="swap-to">Parmesan (lítið) · Laktósalaus mozz.</span>
+    </div>
+    <div class="swap-row">
+      <span class="swap-from">Kaffi með mjólk</span>
+      <span class="swap-arrow">→</span>
+      <span class="swap-to">Hafra-barista · Soja-barista</span>
+    </div>
+  </div>
+  <div class="tip-card">
+    🛒 <strong>Bonus og Hagkaup</strong> hafa góðar laktósalausar útgáfur af mörgum vörum — leitaðu að bláum eða grænum merkjum.
+  </div>
+</div>
+
+<!-- NAMMI -->
+<div class="page" id="page-nammi">
+  <div class="section-label">Forðast</div>
+  <div class="pills">
+    <span class="pill red">Mjólkúrchókólaði</span>
+    <span class="pill red">Twix · KitKat · Snickers · Bounty</span>
+    <span class="pill red">Karamella</span>
+    <span class="pill red">Toffee</span>
+    <span class="pill red">Fudge</span>
+    <span class="pill red">Hvítur súkkulaði</span>
+    <span class="pill red">Krem-filled kex</span>
+  </div>
+  <div class="section-label">Fer vel 🎉</div>
+  <div class="pills">
+    <span class="pill green">Gúmmínammi (bears, hringar, cola)</span>
+    <span class="pill green">Sýrt nammi</span>
+    <span class="pill green">Lícorice (lakkrís)</span>
+    <span class="pill green">Mörkt súkkulaði 70%+</span>
+    <span class="pill green">Popcorn</span>
+    <span class="pill green">Chips (flestar gerðir)</span>
+    <span class="pill green">Pretzels</span>
+    <span class="pill green">Sorbetti</span>
+    <span class="pill green">Íslolly</span>
+    <span class="pill green">Möndlur · hnetur</span>
+  </div>
+  <div class="tip-card">
+    🍫 <strong>Dark chocolate</strong> — ef hún vill súkkulaði, veldu 70%+ mörkt. Inniheldur mjög lítið laktósi og er yfirleitt allt í lagi.
+  </div>
+</div>
+
+<!-- LESA MERKI -->
+<div class="page" id="page-lesa">
+  <div class="section-label">Leitaðu að þessum orðum á merkimiðanum</div>
+  <div class="word-list">
+    <div class="word-card">
+      <span class="word-dot" style="background: var(--red);"></span>
+      <div>
+        <div class="word-main">Laktósi / Lactose</div>
+        <div class="word-also">Beinlínis laktósi</div>
+      </div>
+    </div>
+    <div class="word-card">
+      <span class="word-dot" style="background: var(--red);"></span>
+      <div>
+        <div class="word-main">Mjólk / Milk</div>
+        <div class="word-also">Mjólkurduft, heilmjólk, undanrenna</div>
+      </div>
+    </div>
+    <div class="word-card">
+      <span class="word-dot" style="background: var(--red);"></span>
+      <div>
+        <div class="word-main">Mysa / Whey</div>
+        <div class="word-also">Whey powder, whey protein</div>
+      </div>
+    </div>
+    <div class="word-card">
+      <span class="word-dot" style="background: var(--red);"></span>
+      <div>
+        <div class="word-main">Rjómi / Cream</div>
+        <div class="word-also">Sour cream, double cream</div>
+      </div>
+    </div>
+    <div class="word-card">
+      <span class="word-dot" style="background: var(--red);"></span>
+      <div>
+        <div class="word-main">Smjör / Butter</div>
+        <div class="word-also">Buttermilk, butterfat</div>
+      </div>
+    </div>
+    <div class="word-card">
+      <span class="word-dot" style="background: var(--red);"></span>
+      <div>
+        <div class="word-main">Casein / Caseinate</div>
+        <div class="word-also">Mjólkurprótín</div>
+      </div>
+    </div>
+  </div>
+  <div class="tip-card">
+    ⚠️ <strong>Má innihalda mjólk</strong> þýðir að varan er framleidd í sömu verksmiðju. Þetta er ekki endilega vandamál við laktósaóþol (öfugt við ofnæmi).
+  </div>
+</div>
+
+<script>
+function showPage(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  const colorMap = {
+    'forðast': 'active-red',
+    'maetur': 'active-amber',
+    'valkostur': 'active-green',
+    'nammi': 'active-purple',
+    'lesa': 'active-amber'
+  };
+  document.querySelectorAll('.tab').forEach(t => {
+    t.className = 'tab';
+  });
+  btn.className = 'tab ' + (colorMap[id] || 'active-green');
+}
+</script>
+</body>
+</html>
